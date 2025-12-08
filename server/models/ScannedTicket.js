@@ -1,7 +1,7 @@
-const { DataTypes } = require("sequalize");
-const sequalize = require("../config/database.js");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const ScannedTicket = sequalize.define(
+const ScannedTicket = sequelize.define(
   "ScannedTicket",
   {
     id: {

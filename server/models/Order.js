@@ -1,7 +1,7 @@
-const { DataTypes } = require("sequalize");
-const sequalize = require("../config/database.js");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const Order = sequalize.define(
+const Order = sequelize.define(
   "Order",
   {
     id: {
