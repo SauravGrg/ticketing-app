@@ -45,7 +45,7 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { email, password } = req.body;
   const existingUser = await User.findOne({
     where: { email: email },
   });
@@ -69,7 +69,7 @@ const login = async (req, res) => {
       const secretKey = process.env.JWT_SECRET;
       const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
 
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Login successfully",
         token: token,
