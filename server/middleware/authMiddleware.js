@@ -13,7 +13,7 @@ const authenticateToken = (req, res, next) => {
     if (!token) {
       return res.status(401).json({ message: "Error while login" });
     }
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedPayload) => {
       if (err) {
         console.log(err);
         return res.status(403).json({
@@ -21,8 +21,10 @@ const authenticateToken = (req, res, next) => {
           message: "Could not verify token",
         });
       }
-      req.user = decoded;
+      req.user = decodedPayload;
       next();
     });
   }
 };
+
+module.exports = authenticateToken;

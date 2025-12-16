@@ -4,10 +4,13 @@ const { sequelize } = require("./models");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 5000;
+const eventRoutes = require("./routes/eventRoutes.js");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/events", eventRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Ticketing API is running." });
