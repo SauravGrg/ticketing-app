@@ -1,4 +1,5 @@
 const { Event } = require("../models");
+const { Op } = require("sequelize");
 
 const createEvent = async (req, res) => {
   if (req.user.role !== "host") {
@@ -51,4 +52,23 @@ const createEvent = async (req, res) => {
   }
 };
 
-module.exports = { createEvent };
+const getAllEvents = async (req, res) => {
+  try {
+    const events = await Event.findAll({
+      where: {
+        tickets_available: { [Op.gt]: 0 },
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      data: events,
+    });
+  } catch (error) {
+    console.log("Fetching events failed:", error);
+    res.status(500).json({
+      success: false,
+      message: "Fail to fetch events",
+    });
+  }
+};
+module.exports = { createEvent, getAllEvents };
