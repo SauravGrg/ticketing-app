@@ -1,17 +1,25 @@
 const express = require("express");
 const cors = require("cors");
-const { sequelize } = require("./models");
 require("dotenv").config();
+const { sequelize } = require("./models");
 
-const PORT = process.env.PORT || 5000;
+// Route Imports
 const eventRoutes = require("./routes/eventRoutes.js");
+const authRoutes = require("./routes/authRoutes.js");
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 5000;
 
+// Global Middleware
+app.use(express.json());
+app.use(cors());
+
+// Route Mounting
+console.log("Server.js: Routes are being initialized...");
+app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 
+// Health Check & Test Routes
 app.get("/", (req, res) => {
   res.json({ message: "Ticketing API is running." });
 });
@@ -32,6 +40,7 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
+// Server Startup
 const startServer = async () => {
   try {
     await sequelize.authenticate();
