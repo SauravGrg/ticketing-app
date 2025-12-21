@@ -18,6 +18,7 @@ app.use(cors());
 console.log("Server.js: Routes are being initialized...");
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/events", eventRoutes);
 
 // Health Check & Test Routes
 app.get("/", (req, res) => {

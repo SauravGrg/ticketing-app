@@ -71,4 +71,38 @@ const getAllEvents = async (req, res) => {
     });
   }
 };
-module.exports = { createEvent, getAllEvents };
+
+const getEventById = async (req, res) => {
+  try {
+    //const eventId = req.params.id;
+    const { id } = req.params;
+    const event = await Event.findByPk(id);
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Event retrieved successfully",
+      event: {
+        title: event.title,
+        description: event.description,
+        event_date: event.event_date,
+        location: event.location,
+        ticket_price: event.ticket_price,
+        tickets_total: event.tickets_total,
+      },
+    });
+  } catch (error) {
+    console.error("Get event by Id error:", error);
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while retrieving the event",
+    });
+  }
+};
+
+module.exports = { createEvent, getAllEvents, getEventById };
