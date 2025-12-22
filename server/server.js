@@ -6,6 +6,7 @@ const { sequelize } = require("./models");
 // Route Imports
 const eventRoutes = require("./routes/eventRoutes.js");
 const authRoutes = require("./routes/authRoutes.js");
+const orderRoute = require("./routes/orderRoute.js");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +20,7 @@ console.log("Server.js: Routes are being initialized...");
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/orders", orderRoute);
 
 // Health Check & Test Routes
 app.get("/", (req, res) => {
