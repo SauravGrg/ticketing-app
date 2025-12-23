@@ -1,3 +1,4 @@
+const { title } = require("process");
 const { Order, Event } = require("../models");
 const crypto = require("crypto");
 
@@ -51,4 +52,35 @@ const createOrder = async (req, res) => {
   }
 };
 
-module.exports = { createOrder };
+const getUserOrder = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const userOrders = await Order.findAll({
+      where: {
+        user_id: userId,
+      },
+      include: [
+        {
+          model: Event,
+          as: "event",
+          attributes: ["title", "event_date", "location"],
+        },
+      ],
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Orders retrived successfully",
+      event: userOrders,
+    });
+  } catch (error) {
+    console.log("Error while serching users orders:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error searching user orders",
+    });
+  }
+};
+
+module.exports = { createOrder, getUserOrder };
