@@ -83,4 +83,37 @@ const getUserOrder = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, getUserOrder };
+const getHostOrders = async (req, res) => {
+  try {
+    if (req.user.role !== "host") {
+      return res.status(403).json({
+        success: false,
+        message: "Only host can access these data",
+      });
+    }
+    const currentUserId = req.user.userId;
+    const userOrders = await Order.findAll({
+      include: {
+        model: Event,
+        as: "event",
+        where: {
+          host_id: currentUserId,
+        },
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Here are all the order details",
+      orders: userOrders,
+    });
+  } catch (error) {
+    console.log("Error occur while loaind the data:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error while loading the orders",
+    });
+  }
+};
+
+module.exports = { createOrder, getUserOrder, getHostOrders };
