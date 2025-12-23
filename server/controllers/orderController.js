@@ -1,4 +1,3 @@
-const { title } = require("process");
 const { Order, Event } = require("../models");
 const crypto = require("crypto");
 
@@ -108,7 +107,7 @@ const getHostOrders = async (req, res) => {
       orders: userOrders,
     });
   } catch (error) {
-    console.log("Error occur while loaind the data:", error);
+    console.log("Error occur while loading the data:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error while loading the orders",
@@ -116,4 +115,58 @@ const getHostOrders = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, getUserOrder, getHostOrders };
+const verifyTicket = async (req, res) => {
+  try {
+    const { qr_code } = req.body;
+
+    if (req.user.role !== "host") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: Only hosts can verify tickets",
+      });
+    }
+    const hostId = req.user.userId;
+    const userTicket = await Order.findOne({
+      where: {
+        qr_code: qr_code,
+      },
+      include: {
+        model: Event,
+        as: "event",
+        where: {
+          host_id: hostId,
+        },
+      },
+    });
+
+    if (!userTicket) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid ticket",
+      });
+    }
+
+    if (userTicket.status === "scanned") {
+      return res.status(400).json({
+        success: false,
+        message: "Ticket already scanned",
+      });
+    }
+
+    userTicket.status = "scanned";
+    await userTicket.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Ticket scanned successfully",
+    });
+  } catch (error) {
+    console.log("Ticket Verification Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "An internal server error occurred during verification",
+    });
+  }
+};
+
+module.exports = { createOrder, getUserOrder, getHostOrders, verifyTicket };

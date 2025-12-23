@@ -37,7 +37,7 @@ const Order = sequelize.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM("pending", "paid", "cancelled"),
+      type: DataTypes.ENUM("pending", "paid", "cancelled", "scanned"),
       allowNull: false,
       defaultValue: "pending",
     },
