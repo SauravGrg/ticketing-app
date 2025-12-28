@@ -17,7 +17,6 @@ function Login() {
       if (token) {
         localStorage.setItem("token", token);
         console.log("Login successfull, token saved");
-        alert("Welcome back");
         navigate("/");
       }
     } catch (error) {
