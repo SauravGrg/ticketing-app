@@ -1,9 +1,11 @@
 import { useState } from "react";
 import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -16,6 +18,7 @@ function Login() {
         localStorage.setItem("token", token);
         console.log("Login successfull, token saved");
         alert("Welcome back");
+        navigate("/");
       }
     } catch (error) {
       let message = "Login fail";
