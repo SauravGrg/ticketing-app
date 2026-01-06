@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import CreateEvent from "../components/CreateEvents";
 
 function Home() {
   const [events, setEvents] = useState([]);
@@ -46,6 +47,8 @@ function Home() {
         <h1 className="text-4xl font-extrabold text-white mb-4">
           Welcome to the Event Dashboard
         </h1>
+
+        <CreateEvent onEventCreated={fetchEvents} />
 
         <div className="bg-white px-5 py-8 rounded-2xl m-5">
           <h2 className="text-2xl text-yellow-400 font-extrabold mb-5">
