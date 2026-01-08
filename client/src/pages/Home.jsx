@@ -6,6 +6,7 @@ import CreateEvent from "../components/CreateEvents";
 function Home() {
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
+  const [isLoading, setLoading] = useState(true);
 
   // Redirect unauthenticated users to the login page immediately
   useEffect(() => {
@@ -22,6 +23,7 @@ function Home() {
   };
 
   const fetchEvents = async () => {
+    setLoading(true);
     try {
       const response = await api.get("/events");
       setEvents(response.data.data || []);
@@ -34,6 +36,8 @@ function Home() {
       if (error.response?.status === 401) {
         handleLogout();
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,13 +52,19 @@ function Home() {
           Welcome to the Event Dashboard
         </h1>
 
-        <CreateEvent onEventCreated={fetchEvents} />
-
         <div className="bg-white px-5 py-8 rounded-2xl m-5">
           <h2 className="text-2xl text-yellow-400 font-extrabold mb-5">
             Upcoming Events
           </h2>
-          {events.length > 0 ? (
+
+          <CreateEvent onEventCreated={fetchEvents} />
+
+          {isLoading ? (
+            <div className="flex flex-col items-center py-10">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-pink-700 mb-2"></div>
+              <p className="text-gray-500 font-bold">Fetching events...</p>
+            </div>
+          ) : events.length > 0 ? (
             <ul className="space-y-4">
               {events.map((event) => (
                 <li
