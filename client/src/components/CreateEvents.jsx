@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../api/axios";
+import { toast } from "sonner";
 
 function CreateEvent({ onEventCreated }) {
   const [title, setTitle] = useState("");
@@ -23,7 +24,11 @@ function CreateEvent({ onEventCreated }) {
 
     try {
       const response = await api.post("/events", eventData);
+      toast.success("Event created successfully!");
 
+      if (onEventCreated) {
+        onEventCreated();
+      }
       // Reset form
       setTitle("");
       setDescription("");
@@ -31,13 +36,8 @@ function CreateEvent({ onEventCreated }) {
       setLocation("");
       setTicketPrice(0);
       setTicketsAvailable(100);
-
-      if (onEventCreated) {
-        onEventCreated();
-      }
-      console.log("Event created successfully");
     } catch (error) {
-      console.log("Error while creating event");
+      toast.error("Fail to create event. Please try again");
     }
   };
 
