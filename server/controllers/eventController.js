@@ -1,5 +1,5 @@
 const { Event } = require("../models");
-const { Op } = require("sequelize");
+const { Op, json } = require("sequelize");
 
 const createEvent = async (req, res) => {
   if (req.user.role !== "host") {
@@ -105,4 +105,31 @@ const getEventById = async (req, res) => {
   }
 };
 
-module.exports = { createEvent, getAllEvents, getEventById };
+const deleteEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Event.destroy({
+      where: { id: id, host_id: req.user.userId },
+    });
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Event deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error deleting event,",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { createEvent, getAllEvents, getEventById, deleteEvent };

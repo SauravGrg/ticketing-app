@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import CreateEvent from "../components/CreateEvents";
+import { toast } from "sonner";
+import { FaTrash } from "react-icons/fa";
 
 function Home() {
   const [events, setEvents] = useState([]);
@@ -45,6 +47,20 @@ function Home() {
     fetchEvents();
   }, []);
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+    try {
+      await api.delete(`/events/${id}`);
+      toast.success("Event deleted successfully");
+
+      fetchEvents();
+    } catch (error) {
+      console.log("Error deleting the events:", error);
+      toast.error("Failed to delete the event");
+    }
+  };
+
   return (
     <div className="min-h-screen flex text-center items-center justify-center bg-slate-200 p-4">
       <div className="w-full max-w-2xl bg-pink-500 p-10 rounded-3xl shadow-2xl text-center">
@@ -62,15 +78,21 @@ function Home() {
           {isLoading ? (
             <div className="flex flex-col items-center py-10">
               <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-pink-700 mb-2"></div>
-              <p className="text-gray-500 font-bold">Fetching events...</p>
+              <p className="text-gray-500 font-bold">Loading events...</p>
             </div>
           ) : events.length > 0 ? (
             <ul className="space-y-4">
               {events.map((event) => (
                 <li
                   key={event.id}
-                  className="text-left p-4 font-bold border-2 border-pink-700 bg-slate-50 rounded-xl"
+                  className="relative text-left p-4 font-bold border-2 border-pink-700 bg-slate-50 rounded-xl"
                 >
+                  <button
+                    onClick={() => handleDelete(event.id)}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors"
+                  >
+                    <FaTrash className="h-5 w-5" />
+                  </button>
                   <div>{event.title}</div>
                   <p>{event.description}</p>
                   <div>
